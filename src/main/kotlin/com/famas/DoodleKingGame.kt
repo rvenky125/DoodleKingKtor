@@ -1,0 +1,20 @@
+package com.famas
+
+import com.famas.data.Player
+import com.famas.data.Room
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.MutableStateFlow
+import java.util.concurrent.ConcurrentHashMap
+
+class DoodleKingGame {
+    val players = ConcurrentHashMap<String, Player>()
+    val rooms = ConcurrentHashMap<String, Room>()
+
+    private val gameScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+
+    fun playerJoined(player: Player) {
+        players[player.clientId] = player
+    }
+}

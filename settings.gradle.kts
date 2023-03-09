@@ -1,0 +1,1 @@
+rootProject.name = "com.famas.doodle-king-kmm-api"
