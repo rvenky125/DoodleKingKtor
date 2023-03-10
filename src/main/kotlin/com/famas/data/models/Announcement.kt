@@ -1,8 +1,13 @@
 package com.famas.data.models
 
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class Announcement(
     val message: String,
     val timestamp: Long,
+    @SerialName("announcement_type")
     val announcementType: Int
 ): BaseModel(TYPE_ANNOUNCEMENT) {
     companion object {

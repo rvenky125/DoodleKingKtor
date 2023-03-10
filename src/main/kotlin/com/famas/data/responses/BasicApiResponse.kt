@@ -1,6 +1,10 @@
 package com.famas.data.responses
 
-data class BasicApiResponse(
+import kotlinx.serialization.Serializable
+
+@Serializable
+data class BasicApiResponse<T>(
     val successful: Boolean,
-    val message: String? = null
+    val message: String? = null,
+    val data: T? = null
 )

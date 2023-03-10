@@ -74,16 +74,7 @@ fun Route.standardWebSocket(
             incoming.consumeEach { frame ->
                 if (frame is Frame.Text) {
                     val message = frame.readText()
-                    val jsonObject = Json.parseToJsonElement(message).jsonObject
-                    val type = when (jsonObject["type"].toString()) {
-                        BaseModel.TYPE_ANNOUNCEMENT -> Announcement::class
-                        BaseModel.TYPE_JOIN_ROOM -> JoinRoom::class
-                        BaseModel.TYPE_DRAW_DATA -> DrawData::class
-                        BaseModel.TYPE_CHAT_MESSAGE -> ChatMessage::class
-                        BaseModel.TYPE_GAME_ERROR -> GameError::class
-                        else -> BaseModel::class
-                    }
-                    val payload = Json.decodeFromString(type.serializer(), message)
+                    val payload = Json.decodeFromString(BaseModelSerializer, message)
                     handleFrame(this, session.clientId, message, payload)
                 }
             }
