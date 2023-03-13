@@ -13,6 +13,8 @@ import kotlinx.coroutines.channels.consumeEach
 import kotlinx.serialization.*
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.modules.SerializersModule
+import kotlinx.serialization.modules.polymorphic
 
 
 fun Route.gameWebSocketRoute() {
@@ -47,6 +49,11 @@ fun Route.gameWebSocketRoute() {
                     }
                 }
 
+                is ChosenWord -> {
+                    val room = game.rooms[payload.roomId] ?: return@standardWebSocket
+                    room.setWordAndSwitchToGameRunning(payload.chosenWord)
+                }
+
                 is ChatMessage -> {
 
                 }
@@ -55,7 +62,6 @@ fun Route.gameWebSocketRoute() {
     }
 }
 
-@OptIn(ExperimentalSerializationApi::class, InternalSerializationApi::class)
 fun Route.standardWebSocket(
     handleFrame: suspend (
         socket: DefaultWebSocketServerSession,
@@ -73,9 +79,15 @@ fun Route.standardWebSocket(
         try {
             incoming.consumeEach { frame ->
                 if (frame is Frame.Text) {
-                    val message = frame.readText()
-                    val payload = Json.decodeFromString(BaseModelSerializer, message)
-                    handleFrame(this, session.clientId, message, payload)
+                    try {
+                        val message = frame.readText()
+                        val payload = Json.decodeFromString(BaseModelSerializer, message)
+                        println(payload)
+                        handleFrame(this, session.clientId, message, payload)
+                    } catch (e: Exception) {
+                        println("Failed to deserialize payload: ${frame.readText()}")
+                        println("Error message: ${e.message}")
+                    }
                 }
             }
         } catch (e: Exception) {

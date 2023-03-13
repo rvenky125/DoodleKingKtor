@@ -4,9 +4,8 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class JoinRoom(
-    val username: String,
+data class ChosenWord(
+    val chosenWord: String,
     @SerialName("room_id")
-    val roomId: String,
-): BaseModel(TYPE_JOIN_ROOM)
-
+    val roomId: String
+): BaseModel(TYPE_CHOSEN_WORD)
