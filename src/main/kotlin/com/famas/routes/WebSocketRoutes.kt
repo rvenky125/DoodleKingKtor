@@ -55,7 +55,10 @@ fun Route.gameWebSocketRoute() {
                 }
 
                 is ChatMessage -> {
-
+                    val room = game.rooms[payload.roomId] ?: return@standardWebSocket
+                    if (room.checkWordAndNotifyPlayers(payload)) {
+                        room.broadcast(message)
+                    }
                 }
             }
         }
@@ -81,7 +84,21 @@ fun Route.standardWebSocket(
                 if (frame is Frame.Text) {
                     try {
                         val message = frame.readText()
-                        val payload = Json.decodeFromString(BaseModelSerializer, message)
+                        val jsonElement = Json.parseToJsonElement(message)
+
+                        val serializer = when (jsonElement.jsonObject["type"].toString()) {
+                            TYPE_ANNOUNCEMENT -> Announcement.serializer()
+                            TYPE_JOIN_ROOM -> JoinRoom.serializer()
+                            TYPE_DRAW_DATA -> DrawData.serializer()
+                            TYPE_CHAT_MESSAGE -> ChatMessage.serializer()
+                            TYPE_GAME_ERROR -> GameError.serializer()
+                            TYPE_CHOSEN_WORD -> ChosenWord.serializer()
+                            TYPE_PHASE_CHANGE -> PhaseChange.serializer()
+                            TYPE_GAME_STATE -> GameState.serializer()
+                            else -> BaseModel.serializer()
+                        }
+
+                        val payload = Json.decodeFromString(serializer, message)
                         println(payload)
                         handleFrame(this, session.clientId, message, payload)
                     } catch (e: Exception) {
