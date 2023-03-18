@@ -5,9 +5,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-@SerialName(TYPE_GAME_STATE)
-data class GameState(
-    @SerialName("drawing_player")
-    val drawingPlayer: String,
-    val word: String
-) : BaseModel()
+@SerialName(TYPE_PLAYER_LIST)
+data class PlayerList(
+    val players: List<PlayerData>
+): BaseModel()

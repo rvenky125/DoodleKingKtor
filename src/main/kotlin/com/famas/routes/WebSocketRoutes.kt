@@ -4,6 +4,7 @@ import com.famas.data.Player
 import com.famas.data.Room
 import com.famas.data.models.*
 import com.famas.game
+import com.famas.json
 import com.famas.sessions.DoodleGameSession
 import io.ktor.server.routing.*
 import io.ktor.server.sessions.*
@@ -15,6 +16,7 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
+import kotlinx.serialization.modules.subclass
 
 
 fun Route.gameWebSocketRoute() {
@@ -26,7 +28,7 @@ fun Route.gameWebSocketRoute() {
 
                     if (room == null) {
                         val gameError = GameError(GameError.ERROR_ROOM_NOT_FOUND)
-                        socket.send(Frame.Text(Json.encodeToString(gameError)))
+                        socket.send(Frame.Text(json.encodeToString(gameError)))
                         return@standardWebSocket
                     }
 
@@ -60,6 +62,10 @@ fun Route.gameWebSocketRoute() {
                         room.broadcast(message)
                     }
                 }
+
+                else -> {
+                    println("Didn't get a proper one")
+                }
             }
         }
     }
@@ -84,22 +90,7 @@ fun Route.standardWebSocket(
                 if (frame is Frame.Text) {
                     try {
                         val message = frame.readText()
-                        val jsonElement = Json.parseToJsonElement(message)
-
-                        val serializer = when (jsonElement.jsonObject["type"].toString()) {
-                            TYPE_ANNOUNCEMENT -> Announcement.serializer()
-                            TYPE_JOIN_ROOM -> JoinRoom.serializer()
-                            TYPE_DRAW_DATA -> DrawData.serializer()
-                            TYPE_CHAT_MESSAGE -> ChatMessage.serializer()
-                            TYPE_GAME_ERROR -> GameError.serializer()
-                            TYPE_CHOSEN_WORD -> ChosenWord.serializer()
-                            TYPE_PHASE_CHANGE -> PhaseChange.serializer()
-                            TYPE_GAME_STATE -> GameState.serializer()
-                            else -> BaseModel.serializer()
-                        }
-
-                        val payload = Json.decodeFromString(serializer, message)
-                        println(payload)
+                        val payload = json.decodeFromString<BaseModel>(message)
                         handleFrame(this, session.clientId, message, payload)
                     } catch (e: Exception) {
                         println("Failed to deserialize payload: ${frame.readText()}")
@@ -110,7 +101,13 @@ fun Route.standardWebSocket(
         } catch (e: Exception) {
             e.printStackTrace()
         } finally {
+            val playerWithClientId = game.getRoomWithClientId(session.clientId)?.players?.find {
+                it.clientId == session.clientId
+            }
 
+            if (playerWithClientId != null) {
+                game.playerLeft(session.clientId)
+            }
         }
     }
 }

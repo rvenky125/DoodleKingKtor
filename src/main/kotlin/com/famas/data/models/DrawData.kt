@@ -4,6 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
+@SerialName(TYPE_DRAW_DATA)
 data class DrawData(
     @SerialName("room_id")
     val roomId: String,
@@ -19,4 +20,4 @@ data class DrawData(
     val toY: Float,
     @SerialName("motion_event")
     val motionEvent: Int
-): BaseModel(TYPE_DRAW_DATA)
+): BaseModel()
