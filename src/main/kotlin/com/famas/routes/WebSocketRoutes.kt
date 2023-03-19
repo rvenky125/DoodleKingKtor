@@ -54,6 +54,7 @@ fun Route.gameWebSocketRoute() {
 
                     if (room.phase == Room.Phase.GAME_RUNNING) {
                         room.broadcastToAllExcept(message, clientId)
+                        room.addSerializedDrawInfo(message)
                     }
                 }
 
@@ -73,8 +74,8 @@ fun Route.gameWebSocketRoute() {
                     game.players[clientId]?.receivedPong()
                 }
 
-                else -> {
-                    println("Didn't get a proper one")
+                is DisconnectRequest -> {
+                    game.playerLeft(clientId, true)
                 }
             }
         }
