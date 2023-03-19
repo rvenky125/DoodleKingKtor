@@ -40,6 +40,12 @@ fun Route.gameWebSocketRoute() {
 
                     if (!room.containsPlayer(player.username)) {
                         room.addPlayer(player.clientId, player.username, socket)
+                    } else {
+                        val playerInRoom = room.players.find {
+                            it.clientId == clientId
+                        }
+                        playerInRoom?.socket = socket
+                        playerInRoom?.startPining()
                     }
                 }
 
@@ -61,6 +67,10 @@ fun Route.gameWebSocketRoute() {
                     if (room.checkWordAndNotifyPlayers(payload)) {
                         room.broadcast(message)
                     }
+                }
+
+                is Ping -> {
+                    game.players[clientId]?.receivedPong()
                 }
 
                 else -> {
@@ -101,13 +111,13 @@ fun Route.standardWebSocket(
         } catch (e: Exception) {
             e.printStackTrace()
         } finally {
-            val playerWithClientId = game.getRoomWithClientId(session.clientId)?.players?.find {
-                it.clientId == session.clientId
-            }
+//            val playerWithClientId = game.getRoomWithClientId(session.clientId)?.players?.find {
+//                it.clientId == session.clientId
+//            }
 
-            if (playerWithClientId != null) {
-                game.playerLeft(session.clientId)
-            }
+//            if (playerWithClientId != null) {
+//                game.playerLeft(session.clientId)
+//            }
         }
     }
 }

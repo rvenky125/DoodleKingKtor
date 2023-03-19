@@ -11,4 +11,4 @@ data class PlayerData(
     val isDrawing: Boolean = false,
     val score: Int = 0,
     var rank: Int = 0
-)
+): BaseModel()

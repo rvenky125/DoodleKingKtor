@@ -2,10 +2,12 @@ package com.famas.util
 
 import java.io.File
 
-val words = readWordList("resources/programmers_wordlist.txt")
+val words = readWordList("programmers_wordlist.txt")
 
 fun readWordList(fileName: String): List<String> {
-    val inputStream = File(fileName).inputStream()
+    val classLoader = object {}.javaClass.classLoader
+    val file = classLoader.getResource(fileName)?.file ?: throw IllegalArgumentException("File not found: $fileName")
+    val inputStream = File(file).inputStream()
     val words = mutableListOf<String>()
     inputStream.bufferedReader().forEachLine {
         words.add(it)
@@ -14,6 +16,7 @@ fun readWordList(fileName: String): List<String> {
 }
 
 fun getRandomWords(amount: Int): List<String> {
+    println(words)
     var curAmount = 0
     val result = mutableListOf<String>()
     while (curAmount < amount) {

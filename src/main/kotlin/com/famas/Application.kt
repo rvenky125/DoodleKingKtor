@@ -1,5 +1,6 @@
 package com.famas
 
+import com.famas.data.Player
 import com.famas.data.models.*
 import io.ktor.server.application.*
 import com.famas.plugins.*
@@ -29,6 +30,11 @@ val json = Json {
             subclass(ChosenWord::class, ChosenWord.serializer())
             subclass(PhaseChange::class, PhaseChange.serializer())
             subclass(GameState::class, GameState.serializer())
+            subclass(GameError::class, GameError.serializer())
+            subclass(NewWords::class, NewWords.serializer())
+            subclass(Ping::class, Ping.serializer())
+            subclass(PlayerData::class, PlayerData.serializer())
+            subclass(PlayerList::class, PlayerList.serializer())
         }
     }
 }
