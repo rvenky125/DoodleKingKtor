@@ -1,5 +1,6 @@
 package com.famas.data
 
+import com.famas.data.models.BaseModel
 import com.famas.data.models.Ping
 import com.famas.game
 import com.famas.json
@@ -40,7 +41,7 @@ data class Player(
 
     private suspend fun sendPing() {
         pingTime = System.currentTimeMillis()
-        socket.send(Frame.Text(json.encodeToString(Ping())))
+        socket.send(Frame.Text(json.encodeToString(Ping() as BaseModel)))
         delay(PING_FREQUENCY)
         if (pingTime - pongTime > PING_FREQUENCY) {
             isOnline = false

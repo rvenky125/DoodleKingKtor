@@ -12,12 +12,6 @@ import io.ktor.server.websocket.*
 import io.ktor.websocket.*
 import kotlinx.coroutines.channels.consumeEach
 import kotlinx.serialization.*
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.jsonObject
-import kotlinx.serialization.modules.SerializersModule
-import kotlinx.serialization.modules.polymorphic
-import kotlinx.serialization.modules.subclass
-
 
 fun Route.gameWebSocketRoute() {
     route("/ws/draw") {
@@ -28,7 +22,7 @@ fun Route.gameWebSocketRoute() {
 
                     if (room == null) {
                         val gameError = GameError(GameError.ERROR_ROOM_NOT_FOUND)
-                        socket.send(Frame.Text(json.encodeToString(gameError)))
+                        socket.send(Frame.Text(json.encodeToString(gameError as BaseModel)))
                         return@standardWebSocket
                     }
 
@@ -112,13 +106,13 @@ fun Route.standardWebSocket(
         } catch (e: Exception) {
             e.printStackTrace()
         } finally {
-//            val playerWithClientId = game.getRoomWithClientId(session.clientId)?.players?.find {
-//                it.clientId == session.clientId
-//            }
+            val playerWithClientId = game.getRoomWithClientId(session.clientId)?.players?.find {
+                it.clientId == session.clientId
+            }
 
-//            if (playerWithClientId != null) {
-//                game.playerLeft(session.clientId)
-//            }
+            if (playerWithClientId != null) {
+                game.playerLeft(session.clientId)
+            }
         }
     }
 }

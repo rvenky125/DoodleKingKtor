@@ -68,7 +68,7 @@ data class Room(
 
     private suspend fun sendCurRoundDrawInfoToPlayer(player: Player) {
         if (phase == Phase.GAME_RUNNING || phase == Phase.SHOW_WORD) {
-            player.socket.send(Frame.Text(json.encodeToString(RoundDrawInfo(currentRoundDrawData))))
+            player.socket.send(Frame.Text(json.encodeToString(RoundDrawInfo(currentRoundDrawData) as BaseModel)))
         }
     }
 
@@ -126,7 +126,7 @@ data class Room(
         sendWordToPlayer(player)
         broadcastPlayerStates()
         sendCurRoundDrawInfoToPlayer(player)
-        broadcast(json.encodeToString(announcement))
+        broadcast(json.encodeToString(announcement as BaseModel))
 
         return player
     }
@@ -160,7 +160,7 @@ data class Room(
 
         GlobalScope.launch {
             broadcastPlayerStates()
-            broadcast(json.encodeToString(announcement))
+            broadcast(json.encodeToString(announcement as BaseModel))
             if (players.size == 1) {
                 phase = Phase.WAITING_FOR_PLAYERS
                 timerJob?.cancel()
@@ -186,7 +186,7 @@ data class Room(
                 if (it != 0) {
                     phaseChange.phase = null
                 }
-                broadcast(json.encodeToString(phaseChange))
+                broadcast(json.encodeToString(phaseChange as BaseModel))
                 phaseChange.time -= UPDATE_TIME_FREQUENCY
                 delay(UPDATE_TIME_FREQUENCY)
             }
@@ -218,7 +218,7 @@ data class Room(
                 Phase.WAITING_FOR_PLAYERS,
                 DELAY_WAITING_FOR_START_TO_NEW_ROUND
             )
-            broadcast(json.encodeToString(phaseChange))
+            broadcast(json.encodeToString(phaseChange as BaseModel))
         }
     }
 
@@ -229,7 +229,7 @@ data class Room(
                 Phase.WAITING_FOR_START,
                 DELAY_WAITING_FOR_START_TO_NEW_ROUND
             )
-            broadcast(json.encodeToString(phaseChange))
+            broadcast(json.encodeToString(phaseChange as BaseModel))
         }
     }
 
@@ -240,7 +240,7 @@ data class Room(
         nextDrawingPlayer()
         GlobalScope.launch {
             broadcastPlayerStates()
-            drawingPlayer?.socket?.send(Frame.Text(json.encodeToString(newWords)))
+            drawingPlayer?.socket?.send(Frame.Text(json.encodeToString(newWords as BaseModel)))
             timerAndNotify(DELAY_NEW_ROUND_TO_GAME_RUNNING)
         }
     }
@@ -277,7 +277,7 @@ data class Room(
                 System.currentTimeMillis(),
                 Announcement.TYPE_PLAYER_GUESSED_WORD
             )
-            broadcast(json.encodeToString(announcement))
+            broadcast(json.encodeToString(announcement as BaseModel))
             val isRoundOver = addWinningPlayer(message.from)
 
             if (isRoundOver) {
@@ -286,7 +286,7 @@ data class Room(
                     System.currentTimeMillis(),
                     Announcement.TYPE_EVERYBODY_GUESSED_IT
                 )
-                broadcast(json.encodeToString(roundOverAnnouncement))
+                broadcast(json.encodeToString(roundOverAnnouncement as BaseModel))
             }
 
             return true
@@ -313,10 +313,10 @@ data class Room(
                         curWord.transformToUnderscores()
                     }
                 )
-                player.socket.send(Frame.Text(json.encodeToString(gameState)))
+                player.socket.send(Frame.Text(json.encodeToString(gameState as BaseModel)))
             }
         }
-        player.socket.send(Frame.Text(json.encodeToString(phaseChange)))
+        player.socket.send(Frame.Text(json.encodeToString(phaseChange as BaseModel)))
     }
 
     private fun nextDrawingPlayer() {
@@ -349,10 +349,10 @@ data class Room(
 
         GlobalScope.launch {
             broadcastToAllExcept(
-                json.encodeToString(gameStateForGuessingPlayers),
+                json.encodeToString(gameStateForGuessingPlayers as BaseModel),
                 drawingPlayer?.clientId ?: players.random().clientId
             )
-            drawingPlayer?.socket?.send(Frame.Text(json.encodeToString(gameStateForDrawingPlayer)))
+            drawingPlayer?.socket?.send(Frame.Text(json.encodeToString(gameStateForDrawingPlayer as BaseModel)))
             timerAndNotify(DELAY_GAME_RUNNING_TO_SHOW_WORD)
             println("Drawing phase in room $name started. It'll last ${DELAY_GAME_RUNNING_TO_SHOW_WORD / 1000}s")
         }
@@ -368,12 +368,12 @@ data class Room(
             broadcastPlayerStates()
             word?.let {
                 val chosenWord = ChosenWord(chosenWord = it, roomId = roomId)
-                broadcast(json.encodeToString(chosenWord))
+                broadcast(json.encodeToString(chosenWord as BaseModel))
             }
 
             timerAndNotify(DELAY_SHOW_WORD_TO_NEW_ROUND)
             val phaseChange = PhaseChange(Phase.SHOW_WORD, DELAY_SHOW_WORD_TO_NEW_ROUND)
-            broadcast(json.encodeToString(phaseChange))
+            broadcast(json.encodeToString(phaseChange as BaseModel))
         }
     }
 
@@ -384,7 +384,7 @@ data class Room(
         playersList.forEachIndexed { index, playerData ->
             playerData.rank = index + 1
         }
-        broadcast(json.encodeToString(PlayerList(playersList)))
+        broadcast(json.encodeToString(PlayerList(playersList) as BaseModel))
     }
 
     suspend fun broadcast(message: String) {

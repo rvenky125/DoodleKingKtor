@@ -63,7 +63,7 @@ fun Route.getRoomsRoute() {
         get {
             val searchQuery = call.parameters["query"]
             if (searchQuery == null) {
-                call.respond(HttpStatusCode.BadRequest)
+                call.respond(BasicApiResponse<List<RoomResponse>>(false, "Please send query parameter", null))
                 return@get
             }
 
@@ -75,7 +75,7 @@ fun Route.getRoomsRoute() {
                 RoomResponse(it.name, it.maxPlayers, it.players.size, it.roomId)
             }.sortedBy { it.name }
 
-            call.respond(HttpStatusCode.OK, roomResponses)
+            call.respond(HttpStatusCode.OK, BasicApiResponse(true, "", roomResponses))
         }
     }
 }
@@ -86,7 +86,7 @@ fun Route.joinRoomRoute() {
             val request = call.receiveNullable<JoinRoomRequest>()
 
             if (request == null) {
-                call.respond(HttpStatusCode.BadRequest)
+                call.respond(BasicApiResponse(false, "Please provide mandatory fields", null))
                 return@post
             }
 
@@ -94,7 +94,7 @@ fun Route.joinRoomRoute() {
 
             when {
                 room == null -> {
-                    call.respond(BasicApiResponse<Unit>(false, "failed to find the room with provided request"))
+                    call.respond(BasicApiResponse<Unit>(false, "failed to find the room with provided request ${game.rooms.map { it.toString() }}"))
                 }
 
                 room.containsPlayer(username = request.username) -> {
@@ -109,7 +109,7 @@ fun Route.joinRoomRoute() {
                 }
 
                 else -> {
-                    call.respond(HttpStatusCode.OK, BasicApiResponse<Room>(successful = true, message = "Joining room", data = room))
+                    call.respond(HttpStatusCode.OK, BasicApiResponse<Unit>(successful = true, message = "Joining room"))
                 }
             }
         }
