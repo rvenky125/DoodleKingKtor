@@ -72,9 +72,18 @@ data class Room(
         }
     }
 
-    fun addSerializedDrawInfo(drawAction: String) {
-        currentRoundDrawData = currentRoundDrawData + drawAction
-    }
+//    fun addSerializedDrawInfo(drawAction: String) {
+//        curRoundDrawData = curRoundDrawData + drawAction
+//    }
+//
+//    private suspend fun finishOffDrawing() {
+//        lastDrawData?.let {
+//            if(curRoundDrawData.isNotEmpty() && it.motionEvent == 2) {
+//                val finishDrawData = it.copy(motionEvent = 1)
+//                broadcast(gson.toJson(finishDrawData))
+//            }
+//        }
+//    }
 
     suspend fun addPlayer(clientId: String, username: String, socket: WebSocketSession): Player {
         var indexToAdd = players.size - 1
@@ -190,12 +199,17 @@ data class Room(
                 phaseChange.time -= UPDATE_TIME_FREQUENCY
                 delay(UPDATE_TIME_FREQUENCY)
             }
-
-            phase = when (phase) {
-                Phase.WAITING_FOR_PLAYERS -> Phase.NEW_ROUND
-                Phase.WAITING_FOR_START -> Phase.SHOW_WORD
+            phase = when(phase) {
+                Phase.WAITING_FOR_START -> Phase.NEW_ROUND
+                Phase.GAME_RUNNING ->  {
+//                    finishOffDrawing()
+                    Phase.SHOW_WORD
+                }
                 Phase.SHOW_WORD -> Phase.NEW_ROUND
-                Phase.NEW_ROUND -> Phase.GAME_RUNNING
+                Phase.NEW_ROUND -> {
+                    word = null
+                    Phase.GAME_RUNNING
+                }
                 else -> Phase.WAITING_FOR_PLAYERS
             }
         }
@@ -259,7 +273,7 @@ data class Room(
         if (isGuessCorrect(message)) {
             val guessingTime = System.currentTimeMillis() - startTime
             val timePercentageLeft = 1f - guessingTime.toFloat() / DELAY_GAME_RUNNING_TO_SHOW_WORD
-            val score = GUESS_SCORE_DEFAULT + GUESS_SCORE_PERCENTAGE_MULTIPLIER + timePercentageLeft
+            val score = GUESS_SCORE_DEFAULT + GUESS_SCORE_PERCENTAGE_MULTIPLIER * timePercentageLeft
             val player = players.find { it.username == message.from }
 
             player?.let {
