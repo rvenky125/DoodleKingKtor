@@ -48,7 +48,7 @@ fun Route.gameWebSocketRoute() {
 
                     if (room.phase == Room.Phase.GAME_RUNNING) {
                         room.broadcastToAllExcept(message, clientId)
-                        room.addSerializedDrawInfo(message)
+//                        room.addSerializedDrawInfo(message)
                     }
                 }
 

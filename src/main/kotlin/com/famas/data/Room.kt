@@ -188,7 +188,7 @@ data class Room(
             val phaseChange = PhaseChange(
                 phase = phase,
                 time = ms,
-                drawingPlayer = drawingPlayer?.username
+                drawingPlayer = drawingPlayer?.username,
             )
 
             repeat((ms / UPDATE_TIME_FREQUENCY).toInt()) {
@@ -350,6 +350,7 @@ data class Room(
     private fun gameRunning() {
         winningPlayers = listOf()
         val wordToSend = word ?: curWords?.random() ?: words.random()
+        word = wordToSend
         val wordWithUnderscores = wordToSend.transformToUnderscores()
         val drawingUsername = (drawingPlayer ?: players.random()).username
         val gameStateForDrawingPlayer = GameState(
