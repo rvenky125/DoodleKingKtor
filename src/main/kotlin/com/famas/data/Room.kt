@@ -303,9 +303,9 @@ data class Room(
                 broadcast(json.encodeToString(roundOverAnnouncement as BaseModel))
             }
 
-            return true
+            return false
         }
-        return false
+        return true
     }
 
     private suspend fun sendWordToPlayer(player: Player) {

@@ -2,7 +2,9 @@ package com.famas.util
 
 import java.io.File
 
-val words = readWordList("programmers_wordlist.txt")
+val programmers_words = readWordList("programmers_wordlist.txt")
+val common_words = readWordList("wordlist.txt")
+val words = (programmers_words + common_words).shuffled()
 
 fun readWordList(fileName: String): List<String> {
     val classLoader = object {}.javaClass.classLoader
