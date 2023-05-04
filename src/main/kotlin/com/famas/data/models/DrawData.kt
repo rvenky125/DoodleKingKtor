@@ -3,6 +3,7 @@ package com.famas.data.models
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
+
 @Serializable
 @SerialName(TYPE_DRAW_DATA)
 data class DrawData(
@@ -12,6 +13,10 @@ data class DrawData(
     val thickness: Float? = null,
     val x: Float?,
     val y: Float?,
+    @SerialName("device_width")
+    val deviceWidth: Int?,
+    @SerialName("device_height")
+    val deviceHeight: Int?,
     @SerialName("path_event")
     val pathEvent: Int
 ) : BaseModel() {

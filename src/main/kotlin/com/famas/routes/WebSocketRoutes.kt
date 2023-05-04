@@ -107,12 +107,15 @@ fun Route.standardWebSocket(
         } catch (e: Exception) {
             e.printStackTrace()
         } finally {
+            println("Trying to remove player with client id ${session.clientId}")
             val playerWithClientId = game.getRoomWithClientId(session.clientId)?.players?.find {
                 it.clientId == session.clientId
             }
 
             if (playerWithClientId != null) {
                 game.playerLeft(session.clientId)
+            } else {
+                println("Player null with ${session.clientId}")
             }
         }
     }

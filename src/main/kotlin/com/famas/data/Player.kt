@@ -33,6 +33,7 @@ data class Player(
         pingJob?.cancel()
         pingJob = GlobalScope.launch {
             while (true) {
+                println("Ping job")
                 sendPing()
                 delay(PING_FREQUENCY)
             }
@@ -43,6 +44,7 @@ data class Player(
         pingTime = System.currentTimeMillis()
         socket.send(Frame.Text(json.encodeToString(Ping() as BaseModel)))
         delay(PING_FREQUENCY)
+        println("Pong time $username: $pongTime")
         if (pingTime - pongTime > PING_FREQUENCY) {
             isOnline = false
             game.playerLeft(clientId)

@@ -12,8 +12,6 @@ class DoodleKingGame {
     val players = ConcurrentHashMap<String, Player>()
     val rooms = ConcurrentHashMap<String, Room>()
 
-    private val gameScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
-
     fun playerJoined(player: Player) {
         players[player.clientId] = player
         player.startPining()

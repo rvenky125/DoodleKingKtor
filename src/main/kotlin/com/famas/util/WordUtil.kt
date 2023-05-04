@@ -2,7 +2,7 @@ package com.famas.util
 
 import java.io.File
 
-val programmers_words = readWordList("programmers_wordlist.txt")
+val programmers_words = readWordList("mywords.txt")
 val common_words = readWordList("wordlist.txt")
 val words = (programmers_words + common_words).shuffled()
 
