@@ -128,7 +128,7 @@ data class Room(
         }
 
         val announcement = Announcement(
-            "$username joined the party!",
+            "$username joined the game!",
             System.currentTimeMillis(),
             Announcement.TYPE_PLAYER_JOINED
         )
@@ -162,7 +162,7 @@ data class Room(
         }
 
         val announcement = Announcement(
-            "${player.username} left the party",
+            "${player.username} left the game",
             System.currentTimeMillis(),
             Announcement.TYPE_PLAYER_LEFT
         )

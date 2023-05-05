@@ -8,6 +8,7 @@ import io.ktor.server.application.*
 import io.ktor.server.application.ApplicationCallPipeline.ApplicationPhase.Plugins
 import io.ktor.server.routing.*
 import io.ktor.util.*
+import java.util.UUID
 
 fun Application.configureSecurity() {
     install(Sessions) {
@@ -16,7 +17,7 @@ fun Application.configureSecurity() {
 
     intercept(Plugins) {
         if (call.sessions.get<DoodleGameSession>() == null) {
-            val clientId = call.parameters["client_id"] ?: return@intercept
+            val clientId = UUID.randomUUID().toString()
             call.sessions.set(DoodleGameSession(clientId, generateNonce()))
         }
     }
