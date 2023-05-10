@@ -15,6 +15,7 @@ fun readWordList(fileName: String): List<String> {
         words.add(it)
     }
     return words
+
 }
 
 fun getRandomWords(amount: Int): List<String> {
