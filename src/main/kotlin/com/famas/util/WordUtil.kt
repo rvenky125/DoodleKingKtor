@@ -32,7 +32,37 @@ fun getRandomWords(amount: Int): List<String> {
 }
 
 
-fun String.transformToUnderscores() =
-    toCharArray().map {
-        if(it != ' ') '_' else ' '
+fun List<Int>.getTwoDistinctRandomIntegers(): List<Int> {
+    val randomIntegers = mutableListOf<Int>()
+    while (randomIntegers.size < 2) {
+        val randomInt = this.random()
+        if (!randomIntegers.contains(randomInt)) {
+            randomIntegers.add(randomInt)
+        }
+    }
+
+    return randomIntegers
+}
+
+fun String.transformToUnderscores(): String {
+//    fun letterIndicesToShow(string: String) =
+//        if (string.length < 4) listOf(string.indices.random()) else string.indices.toList().getTwoDistinctRandomIntegers()
+//
+//    val wordsInString = split(" ")
+//    val letterIndicesToShowInEachWord = wordsInString.map { word -> letterIndicesToShow(word) }
+//    println(letterIndicesToShowInEachWord)
+
+//    val resultListOfWords = wordsInString.mapIndexed { wordIndex, word ->
+//        val indicesToShow = letterIndicesToShowInEachWord[wordIndex]
+//        word.toCharArray()
+//            .mapIndexed { letterIndex, letter ->
+//                if (indicesToShow.contains(letterIndex)) '_' else letter
+//            }
+//    }
+//
+//    return resultListOfWords.joinToString(" ")
+
+    return toCharArray().mapIndexed { index, it ->
+        if (index == 0) it else if (index == length - 1 && length > 4) it else if (it != ' ') '_' else ' '
     }.joinToString(" ")
+}
