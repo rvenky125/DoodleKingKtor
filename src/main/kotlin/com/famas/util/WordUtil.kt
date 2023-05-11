@@ -6,16 +6,25 @@ val programmers_words = readWordList("mywords.txt")
 val common_words = readWordList("wordlist.txt")
 val words = (programmers_words + common_words).shuffled()
 
+//fun readWordList(fileName: String): List<String> {
+//    val classLoader = object {}.javaClass.classLoader
+//    val file = classLoader.getResource(fileName)?.file ?: throw IllegalArgumentException("File not found: $fileName")
+//    val inputStream = File(file).inputStream()
+//    val words = mutableListOf<String>()
+//    inputStream.bufferedReader().forEachLine {
+//        words.add(it)
+//    }
+//    return words
+//}
+
 fun readWordList(fileName: String): List<String> {
-    val classLoader = object {}.javaClass.classLoader
-    val file = classLoader.getResource(fileName)?.file ?: throw IllegalArgumentException("File not found: $fileName")
-    val inputStream = File(file).inputStream()
+    val inputStream = object {}.javaClass.classLoader.getResourceAsStream(fileName)
+        ?: throw IllegalArgumentException("File not found: $fileName")
     val words = mutableListOf<String>()
     inputStream.bufferedReader().forEachLine {
         words.add(it)
     }
     return words
-
 }
 
 fun getRandomWords(amount: Int): List<String> {
