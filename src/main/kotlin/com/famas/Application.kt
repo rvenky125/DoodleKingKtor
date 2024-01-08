@@ -1,15 +1,9 @@
 package com.famas
 
-import com.famas.data.Player
 import com.famas.data.Room
 import com.famas.data.models.*
-import io.ktor.server.application.*
 import com.famas.plugins.*
-import com.famas.sessions.DoodleGameSession
-import com.famas.util.Constants
-import io.ktor.serialization.kotlinx.json.*
-import io.ktor.server.sessions.*
-import kotlinx.serialization.KSerializer
+import io.ktor.server.application.*
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.SerializersModule

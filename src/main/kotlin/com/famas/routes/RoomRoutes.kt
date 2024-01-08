@@ -1,9 +1,9 @@
 package com.famas.routes
 
-import com.famas.data.responses.BasicApiResponse
-import com.famas.data.requests.CreateRoomRequest
 import com.famas.data.Room
+import com.famas.data.requests.CreateRoomRequest
 import com.famas.data.requests.JoinRoomRequest
+import com.famas.data.responses.BasicApiResponse
 import com.famas.data.responses.RoomResponse
 import com.famas.game
 import com.famas.util.Constants.MAX_ROOM_SIZE
@@ -12,9 +12,7 @@ import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
-import java.util.UUID
+import java.util.*
 
 fun Route.createRoomRoute() {
     route("/api/createRoom") {
