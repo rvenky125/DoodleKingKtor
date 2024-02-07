@@ -1,6 +1,7 @@
 package com.famas.util
 
-val programmers_words = readWordList("programmers_wordlist.txt")
+val programmers_words = readWordList("telugu_movies.txt")
+//val programmers_words = readWordList("programmers_wordlist.txt")
 val common_words = readWordList("wordlist.txt")
 val words = (programmers_words + common_words).shuffled()
 
